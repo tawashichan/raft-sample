@@ -307,7 +307,7 @@ impl Node {
                             |sum, (_, peer)| if peer.vote_granted { sum + 1 } else { sum },
                         );
                     // 過半数
-                    if voted_count > node_ids.len() / 2 {
+                    if voted_count > node_ids.len() / 2 && self.state == NodeState::Candidate {
                         self.state = NodeState::Leader;
                         self.next_append_entry_due = Some(0);
                         self.next_election_due = None;
@@ -528,9 +528,9 @@ fn main() {
         Node::new(NodeId(5), 1, 9, 1),
     ];
     let initial_state = State::new(nodes);
-    let events = vec![Event::Stop(NodeId(1), 6)];
+    let events = vec![]; //vec![Event::Stop(NodeId(1), 6)];
     let mut history = History::new(events);
-    history.get_history(initial_state, 20);
+    history.get_history(initial_state, 10);
     for state in history.states {
         println!(
             "time: {:?}\nnodes1: {:?}\nnode2: {:?}\nnode3: {:?}\nnode4: {:?}\nnode5: {:?}\nrequests: {:?}\nreplues: {:?}\n",
