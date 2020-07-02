@@ -244,7 +244,7 @@ impl Node {
                 }
                 let last_log_term = self.last_log_term();
                 let last_log_index = self.last_log_index();
-                // 誰にも投票していないか自分に投票していて,なおかつ保持している(commitされている,ではない!)ログが自分の最新のものよりtermが同等か新しいかつindexが同等か新しければok
+                // 誰にも投票していないかCandidateに投票していて,なおかつ保持している(commitされている,ではない!)ログが自分の最新のものよりtermが同等か新しいかつindexが同等か新しければok
                 let granted = body.term >= self.current_term
                     && (self.voted_for == None || self.voted_for == Some(body.from.clone()))
                     && body.last_log_index >= last_log_index
@@ -528,9 +528,9 @@ fn main() {
         Node::new(NodeId(5), 1, 9, 1),
     ];
     let initial_state = State::new(nodes);
-    let events = vec![]; //vec![Event::Stop(NodeId(1), 6)];
+    let events = vec![Event::Stop(NodeId(1), 11),Event::Resume(NodeId(1),17)];
     let mut history = History::new(events);
-    history.get_history(initial_state, 10);
+    history.get_history(initial_state, 20);
     for state in history.states {
         println!(
             "time: {:?}\nnodes1: {:?}\nnode2: {:?}\nnode3: {:?}\nnode4: {:?}\nnode5: {:?}\nrequests: {:?}\nreplues: {:?}\n",
